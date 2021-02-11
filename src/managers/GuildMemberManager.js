@@ -158,7 +158,7 @@ class GuildMemberManager extends BaseManager {
       }
       _data.channel_id = _data.channel.id;
       _data.channel = undefined;
-    } else if (data.channel === null) {
+    } else if (_data.channel === null) {
       _data.channel_id = null;
       _data.channel = undefined;
     }
@@ -173,7 +173,9 @@ class GuildMemberManager extends BaseManager {
     }
     const d = await endpoint.patch({ data: _data, reason });
 
-    return this.cache.get(id)?._clone().patch(d) ?? this.add(d, false);
+    const clone = this.cache.get(id)?._clone();
+    clone?.patch(d);
+    return clone ?? this.add(d, false);
   }
 
   /**
@@ -288,8 +290,7 @@ class GuildMemberManager extends BaseManager {
     if (user instanceof GuildMember) return user;
     const _user = this.client.users.resolve(id);
     if (_user) {
-      const member = this.resolve(_user);
-      return member || _user;
+      return this.resolve(_user) ?? _user;
     }
     return id;
   }
