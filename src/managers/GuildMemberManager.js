@@ -256,12 +256,7 @@ class GuildMemberManager extends BaseManager {
 
     await this.client.api.guilds(this.guild.id).members(id).delete({ reason });
 
-    if (user instanceof GuildMember) return user;
-    const _user = this.client.users.cache.get(id);
-    if (_user) {
-      return this.resolve(_user) ?? _user;
-    }
-    return id;
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? id;
   }
 
   /**
@@ -287,12 +282,7 @@ class GuildMemberManager extends BaseManager {
 
     await this.client.api.guilds(this.guild.id).bans[id].put({ data: options });
 
-    if (user instanceof GuildMember) return user;
-    const _user = this.client.users.resolve(id);
-    if (_user) {
-      return this.resolve(_user) ?? _user;
-    }
-    return id;
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? id;
   }
 
   /**
